@@ -4,13 +4,16 @@ import authHeader from "./auth-header";
 const API_URL = process.env.VUE_APP_API_URL;
 
 class UserService {
-    getProductsData(limit, sort_by, search, order_by, page) {
+    getProductsData(limit=20, page=1, sort_by='id', order_by='asc', search=null) {
         return axios.get(API_URL + 'products', {
-            limit: limit,
-            sort_by: sort_by,
-            search: search,
-            order_by: order_by,
-            page: page
+            params: {
+                limit: limit,
+                sort_by: sort_by,
+                search: search,
+                order_by: order_by,
+                page: page
+
+            }
         });
     }
     getProductData(productId, data) {
