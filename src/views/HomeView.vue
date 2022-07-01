@@ -12,6 +12,13 @@
             {{ salary }}
           </li>
         </template>
+
+        <template #cell(delete)="data">
+          <div class="form-group">
+            <b-button variant="danger" @click="deleteItem(data.item.id)">Delete</b-button>
+          </div>
+        </template>
+
       </b-table>
     </header>
   </div>
@@ -42,21 +49,49 @@ export default {
           key: 'salary',
           sortable: false
         },
+        {
+          key: 'delete',
+          sortable: false
+        },
       ]
     };
   },
   mounted() {
-    UserService.getProductsData().then(
-      response => {
-        this.products = response.data.data;
-      },
-      error => {
-        this.content =
-          (error.response && error.response.data) ||
-          error.message ||
-          error.toString();
-      }
-    );
-  }
+    this.getAllData();
+  },
+  methods: {
+    getAllData: function() {
+      UserService.getProductsData().then(
+        response => {
+          this.products = response.data.data;
+        },
+        error => {
+          this.content =
+            (error.response && error.response.data) ||
+            error.message ||
+            error.toString();
+        }
+      );
+    },
+    deleteItem: function(id) {
+        console.log('delete', id);
+        this.$confirm("Are you want to delete this product?").then(() => {
+          console.log('delete go', id);
+          UserService.deleteProductData(id).then(
+            response => {
+              this.getAllData();
+            },
+            error => {
+              this.content =
+                (error.response && error.response.data) ||
+                error.message ||
+                error.toString();
+            }
+          );
+        });
+    },
+    
+  },
+
 };
 </script>

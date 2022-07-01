@@ -25,7 +25,7 @@ class UserService {
         return axios.post(API_URL + 'products/' + productId, data);
     }
     deleteProductData(productId) {
-        return axios.post(API_URL + 'products/' + productId, {
+        return axios.delete(API_URL + 'products/' + productId, {
             headers: authHeader()
         });
     }
