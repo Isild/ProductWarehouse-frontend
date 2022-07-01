@@ -26,6 +26,14 @@
           </a>
         </li>
       </div>
+      <div v-if="currentUser" class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <router-link to="/products" class="nav-link">
+            <b-icon icon="plus-circle" aria-hidden="true"></b-icon> Add
+          </router-link>
+        
+        </li>
+      </div>
     </nav>
 </template>
 
@@ -41,6 +49,9 @@ export default {
     logOut() {
       this.$store.dispatch('auth/logout');
       this.$router.push('/login');
+    },
+    create() {
+
     }
   }
 };

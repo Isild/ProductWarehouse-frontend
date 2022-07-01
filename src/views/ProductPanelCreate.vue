@@ -1,7 +1,6 @@
 <template>
 <b-card-group deck>
-    <h2>View/Edit product</h2> 
-
+    <h2>Add new product</h2> 
     <div>
         <b-form @submit="onSubmit" @reset="onReset" v-if="show">
           <b-form-group
@@ -65,7 +64,7 @@
 import UserService from '../services/user.service';
 
 export default {
-  name: 'ProductPanelEdit',
+  name: 'ProductPanelCreate',
   props: {
     msg: String
   },
@@ -84,8 +83,7 @@ export default {
   methods: {
     onSubmit(event) {
         event.preventDefault();
-        this.putProductData(this.$route.params.id, this.product);
-
+        this.postProductData(this.product);
     },
     onReset(event) {
         event.preventDefault()
@@ -100,15 +98,16 @@ export default {
         })
         this.getProductData(this.$route.params.id);
     },
-    putProductData: function(id, product) {
-        UserService.putProductData(id, {
+    postProductData: function(product) {
+        UserService.postProductData({
             name: product.name,
             description: product.description,
             salary: product.salary,
         }).then(
         response => {
-
-          response
+          response;
+          console.log(response.data);
+          this.$router.push('/products/' + response.data.id);
         },
         error => {
           this.content =

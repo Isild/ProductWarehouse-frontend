@@ -30,8 +30,7 @@ class UserService {
             headers: authHeader(),
         });
     }
-    postProductData(productId, data) {
-        data.append('headers', authHeader());
+    postProductData(data) {
         return axios.post(API_URL + 'products', 
         {
             name: data.name,

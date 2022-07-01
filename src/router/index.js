@@ -4,6 +4,7 @@ import HomeView from '../views/HomeView.vue'
 import Login from '../views/Login.vue';
 import Register from '../views/Register.vue';
 import ProductPanelEdit from '../views/ProductPanelEdit.vue';
+import ProductPanelCreate from '../views/ProductPanelCreate.vue';
 
 Vue.use(VueRouter)
 
@@ -37,6 +38,10 @@ const routes = [
   {
     path: '/products/:id',
     component: ProductPanelEdit
+  },
+  {
+    path: '/products',
+    component: ProductPanelCreate
   }
 ]
 

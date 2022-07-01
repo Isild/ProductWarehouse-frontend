@@ -4,7 +4,7 @@ import router from './router'
 import store from './store'
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import BootstrapVue from 'bootstrap-vue'
+import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
 import VeeValidate from 'vee-validate';
 import VueSimpleAlert from "vue-simple-alert";
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -22,6 +22,7 @@ Vue.config.productionTip = false
 
 Vue.use(VeeValidate);
 Vue.use(BootstrapVue);
+Vue.use(BootstrapVueIcons);
 Vue.use(VueSimpleAlert);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 new Vue({
