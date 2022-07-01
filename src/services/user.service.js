@@ -20,12 +20,27 @@ class UserService {
         return axios.get(API_URL + 'products/' + productId, data);
     }
     putProductData(productId, data) {
-        data.append('headers', authHeader());
-        return axios.put(API_URL + 'products/' + productId, data);
+        return axios.put(API_URL + 'products/' + productId, 
+        {
+            name: data.name,
+            description: data.description,
+            salary: data.salary,
+        },
+        {
+            headers: authHeader(),
+        });
     }
     postProductData(productId, data) {
         data.append('headers', authHeader());
-        return axios.post(API_URL + 'products/' + productId, data);
+        return axios.post(API_URL + 'products', 
+        {
+            name: data.name,
+            description: data.description,
+            salary: data.salary,
+        },
+        {
+            headers: authHeader(),
+        });
     }
     deleteProductData(productId) {
         return axios.delete(API_URL + 'products/' + productId, {

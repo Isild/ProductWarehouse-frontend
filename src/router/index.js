@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import Login from '../views/Login.vue';
 import Register from '../views/Register.vue';
-import Product from '../views/ProductView.vue';
+import ProductPanelEdit from '../views/ProductPanelEdit.vue';
 
 Vue.use(VueRouter)
 
@@ -31,12 +31,12 @@ const routes = [
     component: Register
   },
   {
-    path: '/products',
-    component: Product
-  },
-  {
     path: '/home',
     component: HomeView
+  },
+  {
+    path: '/products/:id',
+    component: ProductPanelEdit
   }
 ]
 

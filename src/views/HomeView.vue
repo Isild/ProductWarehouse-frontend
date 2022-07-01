@@ -36,7 +36,6 @@
         align="center"
         @page-click="reloadDataPaginator"
       ></b-pagination>
-
     </header>
   </div>
 </template>
@@ -75,7 +74,13 @@ export default {
           key: 'delete',
           sortable: false
         },
-      ]
+      ],
+      product: {
+        id: null,
+        name: '',
+        description:'',
+        salary: [],
+      }
     };
   },
   mounted() {
