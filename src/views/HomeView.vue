@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <header class="jumbotron">
+      
       <b-alert
         :show="dismissCountDown"
         dismissible
@@ -17,10 +18,34 @@
         ></b-progress>
       </b-alert>
 
-      <h3>{{content}}</h3>
-      <h6>Limit 
-        <b-form-select v-model="perPage" :options="options" size="sm" class="mt-3" @change="reloadDataPaginator"></b-form-select>
-      </h6>
+      <b-alert v-model="showDismissibleAlert" variant="danger" dismissible>
+        {{ error }}
+      </b-alert>
+
+      <b-container fluid>
+        <b-row>
+          <b-col >
+            <h6>Limit 
+              <b-form-select v-model="perPage" :options="options" size="sm" class="mt-3" @change="reloadDataPaginator"></b-form-select>
+            </h6>
+          </b-col>
+
+          <b-col sm="3"></b-col>
+
+          <b-col sm="3" inline>
+            <b-input-group class="mt-3">
+              <b-form-input :id="search" :type="search" placeholder="Search" v-model="search"></b-form-input>
+
+              <b-input-group-append>
+                <b-button variant="info" @click="searchFunction">
+                  <b-icon icon="search" aria-hidden="true"></b-icon>
+                </b-button>
+              </b-input-group-append>
+            </b-input-group>
+          </b-col>
+        </b-row>
+      </b-container>
+
       <b-table 
         striped hover 
         :items="products" 
@@ -74,6 +99,7 @@ export default {
       content: '',
       sortBy: 'id', 
       orderBy: 'asc',
+      search: '',
       products: [],
       fields:[
         {
@@ -112,6 +138,7 @@ export default {
         { value: 40, text: "40" },
         { value: 50, text: "50" },
       ],
+      error: "Error",
     };
   },
   mounted() {
@@ -137,10 +164,8 @@ export default {
           this.rows = response.data.total;
         },
         error => {
-          this.content =
-            (error.response && error.response.data) ||
-            error.message ||
-            error.toString();
+          this.error = error.response.data.errors;
+          this.showDismissibleAlert = true;
         }
       );
     },
@@ -150,13 +175,10 @@ export default {
             response => {
               response;
               this.getAllData(this.perPage, this.currentPage, this.sortBy, this.orderBy);
-              this.showAlert();
             },
             error => {
-              this.content =
-                (error.response && error.response.data) ||
-                error.message ||
-                error.toString();
+              this.error = error.response.data.errors;
+              this.showDismissibleAlert = true;
             }
           );
         });
@@ -170,6 +192,9 @@ export default {
     },
     showAlert() {
       this.dismissCountDown = this.dismissSecs;
+    },
+    searchFunction: function(){
+      this.getAllData(this.perPage, 1, this.sortBy, this.orderBy, this.search);
     },
   },
   computed: {
