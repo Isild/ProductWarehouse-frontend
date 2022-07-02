@@ -18,6 +18,9 @@
       </b-alert>
 
       <h3>{{content}}</h3>
+      <h6>Limit 
+        <b-form-select v-model="perPage" :options="options" size="sm" class="mt-3" @change="reloadDataPaginator"></b-form-select>
+      </h6>
       <b-table 
         striped hover 
         :items="products" 
@@ -27,7 +30,8 @@
         >
 
         <template #cell(id)="data">
-          <a :href="`${'/products/' + data.value}`">{{data.value}}</a>
+          <a :href="`${'/products/' + data.value}`" v-if="currentUser">{{data.value}}</a>
+          <a v-if="!currentUser">{{data.value}}</a>
         </template>
         
         <template #cell(salary)="data">
@@ -36,13 +40,14 @@
           </li>
         </template>
 
-        <template #cell(delete)="data">
+        <template v-if="currentUser" #cell(delete)="data">
           <div class="form-group">
             <b-button variant="danger" @click="deleteItem(data.item.id)"><b-icon icon="trash" aria-hidden="true"></b-icon></b-button>
           </div>
         </template>
 
       </b-table>
+      
 
       <b-pagination
         v-model="currentPage"
@@ -52,10 +57,10 @@
         align="center"
         @page-click="reloadDataPaginator"
       ></b-pagination>
+  
     </header>
   </div>
 </template>
-dodać obsługę errorów, żeby wyświetlać wiadomości w polach, ale to po corsach ogarnąć
 
 <script>
 import UserService from '../services/user.service';
@@ -87,10 +92,6 @@ export default {
           key: 'salary',
           sortable: false
         },
-        {
-          key: 'delete',
-          sortable: false
-        },
       ],
       product: {
         id: null,
@@ -100,11 +101,31 @@ export default {
       },
       dismissSecs: 10,
       dismissCountDown: 0,
-      showDismissibleAlert: false
+      showDismissibleAlert: false,
+      user: null,
+      options: [
+        { value: 5, text: "5" },
+        { value: 10, text: "10" },
+        { value: 15, text: "15" },
+        { value: 20, text: "20" },
+        { value: 30, text: "30" },
+        { value: 40, text: "40" },
+        { value: 50, text: "50" },
+      ],
     };
   },
   mounted() {
     this.getAllData(this.perPage, this.currentPage, this.sortBy, this.orderBy);
+  },
+  beforeMount() {
+    if(this.currentUser) {
+      this.fields.push(
+        {
+          key: 'delete',
+          sortable: false,
+        },
+      );
+    }
   },
   methods: {
     getAllData: function(perPage, currentPage, sortBy, orderBy, search) {
@@ -155,6 +176,9 @@ export default {
     // rows() {
     //   return this.products.length
     // }
-  }
+    currentUser() {
+      return this.$store.state.auth.user;
+    }
+  },
 };
 </script>
