@@ -13,7 +13,15 @@
               v-model="product.name"
               placeholder="Name"
               required
+              :state="nameState"
+              @click="nameState=null"
             ></b-form-input>
+
+            <b-form-invalid-feedback id="input-group-1-feedback">
+              <div v-for="(error, index) in nameError" :key="index">
+                {{ error }} 
+              </div>
+            </b-form-invalid-feedback>
           </b-form-group>
           
 
@@ -24,7 +32,15 @@
               placeholder="Description"
               required
               rows="3"
+              :state="descriptionState"
+              @click="descriptionState=null"
             ></b-form-textarea>
+            
+            <b-form-invalid-feedback id="input-group-2-feedback">
+              <div v-for="(error, index) in descriptionError" :key="index">
+                {{ error }} 
+              </div>
+            </b-form-invalid-feedback>
           </b-form-group>
           
 
@@ -34,8 +50,16 @@
               v-model.number="price"
               type="number"
               min="0"
+              :state="priceState"
+              @click="priceState=null"
             >
             </b-form-input>
+            
+            <b-form-invalid-feedback id="input-group-3-feedback">
+              <div v-for="(error, index) in priceError" :key="index">
+                {{ error }} 
+              </div>
+            </b-form-invalid-feedback>
             
             <b-button @click="addPrice">
                 Add price
@@ -45,7 +69,7 @@
             <b-list-group>
                 <b-list-group-item v-for="(price, index) in product.salary" :key="index">
                     {{ price }}        
-                    <b-button variant="danger" @click="deletePrice(index)" :key="index">Delete</b-button>
+                    <b-button variant="danger" @click="deletePrice(index)" :key="index"><b-icon icon="trash" aria-hidden="true"></b-icon></b-button>
                 </b-list-group-item>
             </b-list-group>
 
@@ -66,7 +90,7 @@ import UserService from '../services/user.service';
 export default {
   name: 'ProductPanelCreate',
   props: {
-    msg: String
+    msg: String,
   },
   data() {
     return {
@@ -77,7 +101,13 @@ export default {
         salary: [],
       },
       show: true,
-      price: null
+      price: null,
+      nameState: null,
+      nameError: 'Error',
+      descriptionState: null,
+      descriptionError: 'Error',
+      priceState: null,
+      priceError: 'Error',
     }
   },
   methods: {
@@ -110,10 +140,18 @@ export default {
           this.$router.push('/products/' + response.data.id);
         },
         error => {
-          this.content =
-            (error.response && error.response.data) ||
-            error.message ||
-            error.toString();
+          if(error.response.data.errors.name) {
+            this.nameState = false;
+            this.nameError = error.response.data.errors.name;
+          }
+          if(error.response.data.errors.description) {
+            this.descriptionState = false;
+            this.descriptionError = error.response.data.errors.description;
+          }
+          if(error.response.data.errors.salary) {
+            this.priceState = false;
+            this.priceError = error.response.data.errors.salary;
+          }
         }
       );
     },
