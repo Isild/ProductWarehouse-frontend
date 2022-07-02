@@ -3,6 +3,23 @@
     <h2>View/Edit product</h2> 
 
     <div>
+        <b-alert
+          :show="dismissCountDown"
+          dismissible
+          wariant="success"
+          @dismissed="dismissCountDown=0"
+          @dismiss-count-down="countDownChanged"
+        >
+          <p><b-icon icon="check-circle" aria-hidden="true"></b-icon> Success</p>
+          <b-progress
+            variant="success"
+            :max="dismissSecs"
+            :value="dismissCountDown"
+            height="4px"
+          ></b-progress>
+        </b-alert>
+
+
         <b-form @submit="onSubmit" @reset="onReset" v-if="show">
           <b-form-group
             id="input-group-1"
@@ -46,7 +63,7 @@
             <b-list-group>
                 <b-list-group-item v-for="(price, index) in product.salary" :key="index">
                     {{ price }}        
-                    <b-button variant="danger" @click="deletePrice(index)" :key="index">Delete</b-button>
+                    <b-button variant="danger" @click="deletePrice(index)" :key="index"><b-icon icon="trash" aria-hidden="true"></b-icon></b-button>
                 </b-list-group-item>
             </b-list-group>
 
@@ -78,7 +95,10 @@ export default {
         salary: [],
       },
       show: true,
-      price: null
+      price: null,
+      dismissSecs: 10,
+      dismissCountDown: 0,
+      showDismissibleAlert: false
     }
   },
   methods: {
@@ -107,7 +127,7 @@ export default {
             salary: product.salary,
         }).then(
         response => {
-
+          this.showAlert();
           response
         },
         error => {
@@ -147,6 +167,12 @@ export default {
         this.$nextTick(() => {
           this.show = true
         })
+    },
+    countDownChanged(dismissCountDown) {
+      this.dismissCountDown = dismissCountDown;
+    },
+    showAlert() {
+      this.dismissCountDown = this.dismissSecs;
     }
   },
   mounted() {

@@ -1,6 +1,22 @@
 <template>
   <div class="container">
     <header class="jumbotron">
+      <b-alert
+        :show="dismissCountDown"
+        dismissible
+        wariant="success"
+        @dismissed="dismissCountDown=0"
+        @dismiss-count-down="countDownChanged"
+      >
+        <p><b-icon icon="check-circle" aria-hidden="true"></b-icon> Success</p>
+        <b-progress
+          variant="success"
+          :max="dismissSecs"
+          :value="dismissCountDown"
+          height="4px"
+        ></b-progress>
+      </b-alert>
+
       <h3>{{content}}</h3>
       <b-table 
         striped hover 
@@ -22,7 +38,7 @@
 
         <template #cell(delete)="data">
           <div class="form-group">
-            <b-button variant="danger" @click="deleteItem(data.item.id)"> Delete</b-button>
+            <b-button variant="danger" @click="deleteItem(data.item.id)"><b-icon icon="trash" aria-hidden="true"></b-icon></b-button>
           </div>
         </template>
 
@@ -39,6 +55,7 @@
     </header>
   </div>
 </template>
+dodać obsługę errorów, żeby wyświetlać wiadomości w polach, ale to po corsach ogarnąć
 
 <script>
 import UserService from '../services/user.service';
@@ -80,7 +97,10 @@ export default {
         name: '',
         description:'',
         salary: [],
-      }
+      },
+      dismissSecs: 10,
+      dismissCountDown: 0,
+      showDismissibleAlert: false
     };
   },
   mounted() {
@@ -108,7 +128,8 @@ export default {
           UserService.deleteProductData(id).then(
             response => {
               response;
-              this.getAllData();
+              this.getAllData(this.perPage, this.currentPage, this.sortBy, this.orderBy);
+              this.showAlert();
             },
             error => {
               this.content =
@@ -122,6 +143,12 @@ export default {
     reloadDataPaginator: function(event, pageNumber) {
       // this.currentPage = pageNumber;
       this.getAllData(this.perPage, pageNumber, this.sortBy, this.orderBy);
+    },
+    countDownChanged(dismissCountDown) {
+      this.dismissCountDown = dismissCountDown;
+    },
+    showAlert() {
+      this.dismissCountDown = this.dismissSecs;
     },
   },
   computed: {
